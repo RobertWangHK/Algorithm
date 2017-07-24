@@ -1,0 +1,52 @@
+Shortest Path (weighted & Digraph) :
+
+1. If no cycle - topological 
+1> Topological search and generate postorder list, linear time O(V + E)
+2> For each element in the postorder list, consider its adjacent edges & vertex and update shortest path list & 
+distance values.
+
+2. If cycle - Dijkstra's algorithm
+1> IndexPriority Queue : distance to source is the priority & vertex is key
+2> while : delMin from Queue, include the vertex in known shortest set
+	   iterate this newly added vertex's adjacencies, update distance and parents
+	   if distance to adjacencies change -> decrease priority in priorityQueue
+	   continue until queue is empty || set is V - 1
+
+insert, decrease & delete -> logV
+Worst case : each edge causes an update in priority ElogV
+
+3. If negative edge weight - BF algorithm
+1> Iterate through all edges and for V - 1 times, O(V * E)
+2> improvements : 1. stop if no further updates in distance to source
+
+4. Improvements: SPFA algorithm
+
+1> BFS's idea : pop from queue, look at its adjacent vertices, if distance update, enqueue (only
+   if its parent is not in the queue). 
+
+while (!Q.empty())
+    {
+        // 從queue取出一點，作為a點
+        int a = Q.front(); Q.pop();
+        inqueue[a] = false;
+ 
+        // 加速：如果queue已有parent[a]，則捨棄a點並且重取。
+        if (inqueue[parent[a]]) continue;
+ 
+        for (int b=0; b<9 ++b)
+            if (d[a] + w[a][b] < d[b])
+            {
+                d[b] = d[a] + w[a][b];  // 修正起點到b點的最短路徑長度
+                parent[b] = a;          // b點是由a點延伸過去的
+ 
+                if (!inqueue[b])
+                {
+                    Q.push(b);          // 把b點放入queue
+                    inqueue[b] = true;
+                }
+            }
+    }
+
+2> couls detect negative cycle -> edges of cycle adds up to be negative, so the shortest path will contains 
+infinitely long edges (set a boundary and if exceed, return)
+
