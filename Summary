@@ -1,0 +1,208 @@
+1. Selection sort
+
+2. Insertion sort
+
+3. Shell sort
+
+4. Merge sort, stable but need extra space
+first split till size 1, then merge them back into larger sorted array, need to make
+a copy of the elements, i is for 1, j is for 2, z is for empty, if i < j, copy i to z,
+move i, otherwise, copy and move j.
+
+empty array : [.................]
+sorted array 1: [......] sorted array 2: [......]
+
+5. Quick sort, not stable but in place
+compares items with the splitting node (best practice is to shuffle array and
+use the 1st element), exch smaller to left, larger to right, then iteratively call
+quicksort on two smaller arrays.
+
+6. Quick sort with duplicate keys
+one big problem with quick sort is duplicate keys, because it does not contribute much
+if duplicate key exists, just delete 1 at a time, and results in quadratic time
+sorting. So introduce two more pointers denoting area that is the start and end of
+duplicate areas.
+
+... smaller ... left point ... duplicate ... right point ... larger ...
+
+7. Heap left children 2*x, right child 2*x + 1, parent x / 2
+parent is larger than any of its children, 2 basic operations:
+1. insert, first insert at the end, then swim the child up (compare with its
+parent, if larger, exchange)
+2. delete, exchange parent with last node, pop last node, swim the parent down,
+first find larger children of parent, compare with parent and exchange.
+
+8. Heap sort
+given unordered arrays, start from length/2, swim up (compare with its parent)
+till end, then continuously call delete method of heap structure and copy result
+to an array.
+
+Heap is useful for priorityqueue implementation, for example, line sweep algorithm,
+event driven simulation, needs to get the next event (smallest time) quickly (constant
+time operation).
+
+1. BST:
+
+binary search & insert & seletion in logN time (worst case N)
+
+2. 2-3 tree: balanced tree and worst case search, insert, selection in LogN time
+
+3. Red Black tree is a implementation of 2-3 tree, red line denotes a 3-node
+and black lines are for normal parent child relationship and be counted into
+the length and time complexity of search, etc.
+
+three basic operation of red black tree:
+
+1. rotate left
+2. rotate right
+3. split color
+
+unbalanced -> balanced tree: case by case ordered operations
+most complicated case:
+        node
+       red
+      node
+       red
+        node
+
+1. rotate left
+2. rotate right
+3. split color
+
+4. B tree is a generalzed version of 2-3 tree where each node contains
+more than 2/3 children. And is used in driver and memory operations.
+Data are stored in the leaves, and parent nodes store search keys (left most of
+each child node). The search process is same as BST/RBT is time logN.
+
+1. Range Search by BST:
+
+# of elements fall between key a and key b = difference of ranks
+fetch all keys fall between a and b, use in order traversal private
+helper funciton (with a queue) maximum logN + R time
+
+
+2. Line Segment Intersection:
+
+Sort all x coordinates.
+Sweep from left to right, if first time hit y, insert BST
+if second time hit y, delete from BST
+for each vertical line, search all BST points that fall between line ->
+apply the idea of range search at this stage (*)
+
+3. KD Tree:
+
+For geometric search between multi-dimensional points
+1. each node contains a orientation element (switch one and another) that
+indicates how we should treat this splitting element and decide where to
+go for the next search (left or right).
+e.g. root Left/Right root's child Up/Down
+
+2. Search for point within a range, same idea as BST but:
+- if the line segment intersects with rectangular, need to check both
+left and right child for possible falling into the range.
+
+3. nearest point
+- keep track of the nearest point, iterate, compute newer distance value,
+if smaller, update with it.
+- remember we also need to go for both direction, because even though query
+point is on left, there still might be nearer point on the right, but if there
+is nearer point on the left already, no need to further search on right.
+
+4. Interval Search Tree:
+insert according to the interval min, but keep track of max value in each node,
+need to update max value after insertion
+for search, if interval's min > left's max or left = null -> go to right, otherwise
+go to left.
+search for all needs more time
+
+5. Rectangle intersection : sweep algorithm + interval search tree (replace BST)
+
+
+hash can save time in searching & insertion.
+
+hash categoreis:
+1. linear probing
+space larger than number of keys, resize (1/2) to make sure contant complexity in
+searching and insertion
+Less wasted space & better cache performance
+For deletion, need to search forward and find another possible cell that has the
+same hash value as the one deleted.
+
+2. seperate chain
+need extra space to store linked list, M ~ N/5, so that if normal distribution is assumed,
+query needs only 3 ~ 5 constant time.
+Easier to implement delete & performances degrades gracefully
+Less sensitive to poorly designed hash function
+
+
+But need to take into account the time of computing hash value for different keys
+and potential collision patterns, for example, when applying hashing methods
+for normal strings like take evenly every 8 characters & multiple 31, several url might
+result to the collisions.
+
+The most important idea is that if the assumption of uniform hashing cannot be guaranteed
+and the situation is important, maybe think of guaranteed algorithm like
+red-black tree is better than that. e.g. denial of service attacks
+
+"Aa" and "BB" has the same hashcode value, so (Aa)^n(BB)^m collides -> 2^n strings of length
+2N can hash to the same value -> crash the system
+
+3. One way hash function:
+make it difficult to find another key that will hash to the same value, used in many cryptography
+ scenarios such as MD4, MD5, SHA-0/SHA-1, etc
+
+4. Two-probe hashing & other improvements -> better usage of space and memory
+
+Java -> HashMap & TreeMap support both hashtable and red black treeShortest Path (weighted & Digraph) :
+
+Shortest Path (weighted & Digraph) :
+
+1. If no cycle - topological 
+1> Topological search and generate postorder list, linear time O(V + E)
+2> For each element in the postorder list, consider its adjacent edges & vertex and update shortest path list & 
+distance values.
+
+2. If cycle - Dijkstra's algorithm
+1> IndexPriority Queue : distance to source is the priority & vertex is key
+2> while : delMin from Queue, include the vertex in known shortest set
+	   iterate this newly added vertex's adjacencies, update distance and parents
+	   if distance to adjacencies change -> decrease priority in priorityQueue
+	   continue until queue is empty || set is V - 1
+
+insert, decrease & delete -> logV
+Worst case : each edge causes an update in priority ElogV
+
+3. If negative edge weight - BF algorithm
+1> Iterate through all edges and for V - 1 times, O(V * E)
+2> improvements : 1. stop if no further updates in distance to source
+
+4. Improvements: SPFA algorithm
+
+1> BFS's idea : pop from queue, look at its adjacent vertices, if distance update, enqueue (only
+   if its parent is not in the queue). 
+
+while (!Q.empty())
+    {
+        int a = Q.front(); Q.pop();
+        inqueue[a] = false;
+ 
+        if (inqueue[parent[a]]) continue;
+ 
+        for (int b=0; b<9 ++b)
+            if (d[a] + w[a][b] < d[b])
+            {
+                d[b] = d[a] + w[a][b]; 
+                parent[b] = a;
+ 
+                if (!inqueue[b])
+                {
+                    Q.push(b);
+                    inqueue[b] = true;
+                }
+            }
+    }
+
+2> couls detect negative cycle -> edges of cycle adds up to be negative, so the shortest path will contains 
+infinitely long edges (set a boundary and if exceed, return)
+
+
