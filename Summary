@@ -205,4 +205,19 @@ while (!Q.empty())
 2> couls detect negative cycle -> edges of cycle adds up to be negative, so the shortest path will contains 
 infinitely long edges (set a boundary and if exceed, return)
 
+Reduction:
+
+Problem X can be reduced to problem Y with linear reduction cost
+-> X = Y + O(N) constant operation
+e.g. convex hull problem: sorting (Y) + traversal (linear)
+
+establish lower bound:
+if X can be reduced to Y, then lower bound of Y must be at lower bound
+of X, otherwise, there is better way to solve problem X
+e.g. sorting problem can be reduced to convex hull : after getting the
+convex hull, we know the relative ordering of points, so that the lower
+bound of convex hull must be at least lower bound of sorting (O(NlogN))
+
+prove two problem have same lower complexity:
+X can be reduced to Y & Y can be reduced to X.
 
